@@ -6,6 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from io import BytesIO
 import re
 from collections import Counter
+import requests
 
 app = Flask(__name__)
 
@@ -71,6 +72,27 @@ def match_job():
         'match_score': round(score * 100, 2),
         'message': 'Higher score means better resume-job fit'
     })
+
+# 📍 Integrated API: Get Weather from Resume App
+@app.route('/weather_from_resume', methods=['GET'])
+def weather_from_resume():
+    city = request.args.get('city')
+    if not city:
+        return jsonify({'error': 'City parameter is required'}), 400
+
+    try:
+        # Call the external weather API from your weather app
+        weather_api_url = f'http://16.171.136.237:5000/weather?city={city}'
+        response = requests.get(weather_api_url)
+        data = response.json()
+
+        return jsonify({
+            'source': 'External Weather App',
+            'city': city,
+            'weather_data': data
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch weather: {str(e)}'}), 500
 
 # 🔍 Health check route
 @app.route('/')

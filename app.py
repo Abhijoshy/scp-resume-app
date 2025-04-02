@@ -7,8 +7,10 @@ from io import BytesIO
 import re
 from collections import Counter
 import requests
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all origins
 
 # 📄 Extract text from PDF file
 def extract_text_from_pdf(file_stream):
